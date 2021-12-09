@@ -75,6 +75,7 @@ class Ui_BuddyBuilder(object):
         self.profile_edit.setObjectName(u"profile_edit")
         sizePolicy.setHeightForWidth(self.profile_edit.sizePolicy().hasHeightForWidth())
         self.profile_edit.setSizePolicy(sizePolicy)
+        self.profile_edit.setReadOnly(True)
 
         self.profile_layout.addWidget(self.profile_edit)
 
@@ -106,6 +107,7 @@ class Ui_BuddyBuilder(object):
         self.buddy_edit.setObjectName(u"buddy_edit")
         sizePolicy.setHeightForWidth(self.buddy_edit.sizePolicy().hasHeightForWidth())
         self.buddy_edit.setSizePolicy(sizePolicy)
+        self.buddy_edit.setReadOnly(True)
 
         self.buddy_layout.addWidget(self.buddy_edit)
 

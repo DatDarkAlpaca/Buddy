@@ -25,15 +25,75 @@ class Ui_MainWindow(object):
         self.verticalLayout = QVBoxLayout(self.central_widget)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(9, 0, 9, 9)
-        self.buddy_display = QLabel(self.central_widget)
-        self.buddy_display.setObjectName(u"buddy_display")
-        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.verticalSpacer = QSpacerItem(20, 5, QSizePolicy.Minimum, QSizePolicy.Fixed)
+
+        self.verticalLayout.addItem(self.verticalSpacer)
+
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalLayout.setContentsMargins(0, 0, -1, -1)
+        self.buddy_name = QLabel(self.central_widget)
+        self.buddy_name.setObjectName(u"buddy_name")
+
+        self.horizontalLayout.addWidget(self.buddy_name)
+
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout.addItem(self.horizontalSpacer)
+
+        self.minimize_button = QPushButton(self.central_widget)
+        self.minimize_button.setObjectName(u"minimize_button")
+        sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.buddy_display.sizePolicy().hasHeightForWidth())
-        self.buddy_display.setSizePolicy(sizePolicy)
+        sizePolicy.setHeightForWidth(self.minimize_button.sizePolicy().hasHeightForWidth())
+        self.minimize_button.setSizePolicy(sizePolicy)
+        self.minimize_button.setMinimumSize(QSize(16, 16))
+        self.minimize_button.setMaximumSize(QSize(16, 16))
+        icon = QIcon()
+        icon.addFile(u"../res/minus.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.minimize_button.setIcon(icon)
+        self.minimize_button.setFlat(True)
+
+        self.horizontalLayout.addWidget(self.minimize_button)
+
+        self.settings_button = QPushButton(self.central_widget)
+        self.settings_button.setObjectName(u"settings_button")
+        self.settings_button.setMinimumSize(QSize(16, 16))
+        self.settings_button.setMaximumSize(QSize(16, 16))
+        self.settings_button.setLayoutDirection(Qt.RightToLeft)
+        icon1 = QIcon()
+        icon1.addFile(u"../res/setting.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.settings_button.setIcon(icon1)
+        self.settings_button.setFlat(True)
+
+        self.horizontalLayout.addWidget(self.settings_button)
+
+        self.close_button = QPushButton(self.central_widget)
+        self.close_button.setObjectName(u"close_button")
+        sizePolicy.setHeightForWidth(self.close_button.sizePolicy().hasHeightForWidth())
+        self.close_button.setSizePolicy(sizePolicy)
+        self.close_button.setMinimumSize(QSize(16, 16))
+        self.close_button.setMaximumSize(QSize(16, 16))
+        icon2 = QIcon()
+        icon2.addFile(u"../res/close.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.close_button.setIcon(icon2)
+        self.close_button.setFlat(True)
+
+        self.horizontalLayout.addWidget(self.close_button)
+
+
+        self.verticalLayout.addLayout(self.horizontalLayout)
+
+        self.buddy_display = QLabel(self.central_widget)
+        self.buddy_display.setObjectName(u"buddy_display")
+        sizePolicy1 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.buddy_display.sizePolicy().hasHeightForWidth())
+        self.buddy_display.setSizePolicy(sizePolicy1)
         self.buddy_display.setPixmap(QPixmap(u"../gura.png"))
-        self.buddy_display.setScaledContents(False)
+        self.buddy_display.setScaledContents(True)
         self.buddy_display.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout.addWidget(self.buddy_display)
@@ -41,11 +101,11 @@ class Ui_MainWindow(object):
         self.buddy_output = QTextEdit(self.central_widget)
         self.buddy_output.setObjectName(u"buddy_output")
         self.buddy_output.setEnabled(True)
-        sizePolicy1 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.buddy_output.sizePolicy().hasHeightForWidth())
-        self.buddy_output.setSizePolicy(sizePolicy1)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.buddy_output.sizePolicy().hasHeightForWidth())
+        self.buddy_output.setSizePolicy(sizePolicy2)
         self.buddy_output.setMaximumSize(QSize(16777215, 100))
         self.buddy_output.setMouseTracking(True)
         self.buddy_output.setFocusPolicy(Qt.NoFocus)
@@ -90,12 +150,16 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Buddy v1.0", None))
+        self.buddy_name.setText(QCoreApplication.translate("MainWindow", u"Gura", None))
+        self.minimize_button.setText("")
+        self.settings_button.setText("")
+        self.close_button.setText("")
         self.buddy_display.setText("")
         self.buddy_output.setHtml(QCoreApplication.translate("MainWindow", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Hello! My name is Blank!</p></body></html>", None))
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Hello, my name is Gura!</p></body></html>", None))
         self.feed_button.setText(QCoreApplication.translate("MainWindow", u"Feed", None))
         self.play_button.setText(QCoreApplication.translate("MainWindow", u"Play", None))
         self.sleep_button.setText(QCoreApplication.translate("MainWindow", u"Sleep", None))

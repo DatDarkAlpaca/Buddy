@@ -119,6 +119,9 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
         <item>
@@ -174,6 +177,9 @@
           </property>
           <property name="toolTip">
            <string>Loads a file from your computer.</string>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
           </property>
          </widget>
         </item>

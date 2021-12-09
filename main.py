@@ -10,8 +10,8 @@ from pathlib import Path
 import pickle
 import sys
 
-g_buddy_path = 'gura.png'
-spin_path = 'gura_spin.gif'
+g_buddy_path = 'res/gura.png'
+spin_path = 'res/gura_spin.gif'
 
 
 # Main Widget:
@@ -20,23 +20,37 @@ class MainApplication(QMainWindow, main_window.Ui_MainWindow):
         super().__init__(parent)
         self.setupUi(self)
 
+        self.statusBar()
+
+        self.setWindowFlags(Qt.FramelessWindowHint)
+
         # Mini Buddy:
         self.mini_buddy = MiniBuddy(self)
         self.mini_buddy.installEventFilter(self)
 
         # Buddy Builder:
         self.buddy_builder = BuddyBuilder(self)
-        self.buddy_builder.show()
 
-        # Buddy Image:
-        self.load_buddy_image()
-        self.buddy_display.setScaledContents(True)
+        # Buddy image:
+        self.buddy_display.setPixmap(QPixmap(g_buddy_path))
+
+        # Minimize button:
+        self.minimize_button.setIcon(QPixmap('res/minus.png'))
+        self.minimize_button.clicked.connect(self.showMinimized)
+
+        # Settings button:
+        self.settings_button.setIcon(QPixmap('res/setting.png'))
+        self.settings_button.clicked.connect(self.buddy_builder.show)
+
+        # Close button:
+        self.close_button.setIcon(QPixmap('res/close.png'))
+        self.close_button.clicked.connect(self.close)
+
+        # Dragging:
+        self.offset = QPoint()
+        self.dragging = False
 
         # Todo: check whether the user has loaded a buddy previously.
-
-    # Initializers:
-    def load_buddy_image(self):
-        self.buddy_display.setPixmap(QPixmap(g_buddy_path))
 
     # Events:
     def mouseDoubleClickEvent(self, event):
@@ -62,6 +76,21 @@ class MainApplication(QMainWindow, main_window.Ui_MainWindow):
         self.mini_buddy.hide()
 
         self.show()
+
+    # Dragging:
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self.offset = event.globalPosition().toPoint()
+            self.dragging = True
+
+    def mouseReleaseEvent(self, event):
+        self.dragging = False
+
+    def mouseMoveEvent(self, event):
+        if self.dragging:
+            delta = QPoint(event.globalPosition().toPoint() - self.offset)
+            self.move(self.x() + delta.x(), self.y() + delta.y())
+            self.offset = event.globalPosition().toPoint()
 
 
 # Mini Buddy:
@@ -137,9 +166,10 @@ class BuddyBuilder(QMainWindow, buddy_builder.Ui_BuddyBuilder):
         self.mini_buddy_preview.setPixmap(spin_path)
 
         # Buddy Properties:
-        self.profile_path, self.mini_buddy_path = '', ''
+        self.buddy_name, self.profile_path, self.mini_buddy_path = [''] * 3
 
     def initialize(self):
+        # Todo: use the text rather than the visibility.
         self.not_empty_name.setVisible(False)
         self.not_empty_profile.setVisible(False)
         self.not_empty_buddy.setVisible(False)
@@ -154,22 +184,28 @@ class BuddyBuilder(QMainWindow, buddy_builder.Ui_BuddyBuilder):
         self.buddy_tool.clicked.connect(self.set_mini_buddy_path)
 
     def set_profile_picture_path(self):
-        path = QFileDialog.getOpenFileName(self, 'Open file', str(Path().resolve()), 'Image files (*.jpg *.gif)')
+        path, _ = QFileDialog.getOpenFileName(self, 'Open file', str(Path().resolve()), 'Image files (*.jpg *.gif)')
         if path != '':
-            self.profile_path = path[0]
+            self.profile_path = path
+
+        self.profile_edit.setText(self.profile_path)
 
         self.profile_preview.setPixmap(QPixmap(self.profile_path))
 
     def set_mini_buddy_path(self):
-        path = QFileDialog.getOpenFileName(self, 'Open file', str(Path().resolve()), 'Image files (*.png *.jpg *.gif)')
+        path, _ = QFileDialog.getOpenFileName(self, 'Open file', str(Path().resolve()), 'Image files (*.png *.jpg *.gif)')
         if path != '':
-            self.mini_buddy_path = path[0]
+            self.mini_buddy_path = path
+
+        self.buddy_edit.setText(self.mini_buddy_path)
 
         self.mini_buddy_preview.setPixmap(QPixmap(self.mini_buddy_path))
 
     # Create Buddy:
     def create_buddy(self):
         self.validate()
+
+        self.buddy_name = self.name_edit.text()
 
         if self.valid:
             self.close()
@@ -195,12 +231,6 @@ class BuddyBuilder(QMainWindow, buddy_builder.Ui_BuddyBuilder):
             self.valid = False
         else:
             self.not_empty_buddy.setVisible(False)
-
-    def _is_path_valid(self):
-        pass
-
-    def _determine_resource_type(self):
-        pass
 
 
 # Buddy file:
@@ -252,7 +282,7 @@ class Buddy:
 
 
 # Data Serialization:
-def save_buddy(b: Buddy):
+def save_buddy(b: BuddyFile):
     with open('buddy.sv', 'wb') as f:
         pickle.dump([b], f, protocol=2)
 
@@ -267,7 +297,7 @@ def load_buddy():
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     widget = MainApplication()
-    apply_stylesheet(app, theme='dark_teal.xml')
+    apply_stylesheet(app, theme='dark_yellow.xml')
 
     widget.show()
     sys.exit(app.exec())

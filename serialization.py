@@ -26,7 +26,7 @@ class BuddyFile:
             self.profile_picture = QPixmap(profile_path)
 
         # Mini Buddy Picture:
-        image_reader = QImageReader(profile_path)
+        image_reader = QImageReader(buddy_path)
         if image_reader.supportsAnimation() and image_reader.imageCount() > 1:
             self.is_buddy_image = False
         else:
@@ -75,11 +75,11 @@ def save_buddy(buddy_file: BuddyFile, filename):
 
         if profile_resource:
             profile_resource.save('./saves/profile.gif', format='GIF', save_all=True, disposal=2)
-            zip_file.write('./saves/profile.gif')
+            zip_file.write('./saves/profile.gif', 'profile.gif')
 
         if mini_buddy_resource:
             mini_buddy_resource.save('./saves/buddy.gif', format='GIF', save_all=True, disposal=2)
-            zip_file.write('./saves/buddy.gif')
+            zip_file.write('./saves/buddy.gif', 'buddy.gif')
 
 
 # Load:
@@ -91,7 +91,6 @@ def load_buddy(filepath):
     # Unzip:
     with ZipFile(filepath, 'r') as zip_file:
         zip_file.extractall(getcwd() + '/saves/')
-
         for file in listdir(getcwd() + '/saves/'):
             if file.endswith('ii'):
 

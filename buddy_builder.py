@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QMainWindow, QFileDialog
+from PySide6.QtWidgets import QDialog, QFileDialog
 from PySide6.QtGui import QPixmap
 
 from compiled_ui.buddy_builder import Ui_BuddyBuilder
@@ -7,7 +7,7 @@ from pathlib import Path
 from serialization import BuddyFile, save_buddy
 
 
-class BuddyBuilder(QMainWindow, Ui_BuddyBuilder):
+class BuddyBuilder(QDialog, Ui_BuddyBuilder):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)

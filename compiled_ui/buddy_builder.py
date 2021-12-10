@@ -19,16 +19,14 @@ class Ui_BuddyBuilder(object):
             BuddyBuilder.setObjectName(u"BuddyBuilder")
         BuddyBuilder.resize(600, 400)
         BuddyBuilder.setMinimumSize(QSize(600, 400))
-        self.central_widget = QWidget(BuddyBuilder)
-        self.central_widget.setObjectName(u"central_widget")
-        self.horizontalLayout_2 = QHBoxLayout(self.central_widget)
-        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.horizontalLayout_2.setContentsMargins(30, 20, -1, -1)
+        self.horizontalLayout = QHBoxLayout(BuddyBuilder)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalLayout.setContentsMargins(30, 20, -1, -1)
         self.create_layout = QVBoxLayout()
         self.create_layout.setObjectName(u"create_layout")
         self.create_layout.setSizeConstraint(QLayout.SetDefaultConstraint)
         self.create_layout.setContentsMargins(-1, 0, 0, -1)
-        self.title = QLabel(self.central_widget)
+        self.title = QLabel(BuddyBuilder)
         self.title.setObjectName(u"title")
         font = QFont()
         font.setPointSize(14)
@@ -40,12 +38,12 @@ class Ui_BuddyBuilder(object):
 
         self.create_layout.addItem(self.vertical_spacer1)
 
-        self.name_label = QLabel(self.central_widget)
+        self.name_label = QLabel(BuddyBuilder)
         self.name_label.setObjectName(u"name_label")
 
         self.create_layout.addWidget(self.name_label)
 
-        self.name_edit = QLineEdit(self.central_widget)
+        self.name_edit = QLineEdit(BuddyBuilder)
         self.name_edit.setObjectName(u"name_edit")
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -55,14 +53,14 @@ class Ui_BuddyBuilder(object):
 
         self.create_layout.addWidget(self.name_edit)
 
-        self.not_empty_name = QLabel(self.central_widget)
+        self.not_empty_name = QLabel(BuddyBuilder)
         self.not_empty_name.setObjectName(u"not_empty_name")
         self.not_empty_name.setEnabled(True)
         self.not_empty_name.setStyleSheet(u"color: rgb(255, 0, 0);")
 
         self.create_layout.addWidget(self.not_empty_name)
 
-        self.profile_label = QLabel(self.central_widget)
+        self.profile_label = QLabel(BuddyBuilder)
         self.profile_label.setObjectName(u"profile_label")
 
         self.create_layout.addWidget(self.profile_label)
@@ -71,7 +69,7 @@ class Ui_BuddyBuilder(object):
         self.profile_layout.setSpacing(6)
         self.profile_layout.setObjectName(u"profile_layout")
         self.profile_layout.setSizeConstraint(QLayout.SetDefaultConstraint)
-        self.profile_edit = QLineEdit(self.central_widget)
+        self.profile_edit = QLineEdit(BuddyBuilder)
         self.profile_edit.setObjectName(u"profile_edit")
         sizePolicy.setHeightForWidth(self.profile_edit.sizePolicy().hasHeightForWidth())
         self.profile_edit.setSizePolicy(sizePolicy)
@@ -79,15 +77,22 @@ class Ui_BuddyBuilder(object):
 
         self.profile_layout.addWidget(self.profile_edit)
 
-        self.profile_tool = QToolButton(self.central_widget)
+        self.profile_tool = QPushButton(BuddyBuilder)
         self.profile_tool.setObjectName(u"profile_tool")
+        sizePolicy1 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        sizePolicy1.setHorizontalStretch(22)
+        sizePolicy1.setVerticalStretch(22)
+        sizePolicy1.setHeightForWidth(self.profile_tool.sizePolicy().hasHeightForWidth())
+        self.profile_tool.setSizePolicy(sizePolicy1)
+        self.profile_tool.setMinimumSize(QSize(22, 22))
+        self.profile_tool.setMaximumSize(QSize(22, 22))
 
         self.profile_layout.addWidget(self.profile_tool)
 
 
         self.create_layout.addLayout(self.profile_layout)
 
-        self.not_empty_profile = QLabel(self.central_widget)
+        self.not_empty_profile = QLabel(BuddyBuilder)
         self.not_empty_profile.setObjectName(u"not_empty_profile")
         self.not_empty_profile.setEnabled(True)
         self.not_empty_profile.setMinimumSize(QSize(0, 0))
@@ -96,14 +101,14 @@ class Ui_BuddyBuilder(object):
 
         self.create_layout.addWidget(self.not_empty_profile)
 
-        self.buddy_label = QLabel(self.central_widget)
+        self.buddy_label = QLabel(BuddyBuilder)
         self.buddy_label.setObjectName(u"buddy_label")
 
         self.create_layout.addWidget(self.buddy_label)
 
         self.buddy_layout = QHBoxLayout()
         self.buddy_layout.setObjectName(u"buddy_layout")
-        self.buddy_edit = QLineEdit(self.central_widget)
+        self.buddy_edit = QLineEdit(BuddyBuilder)
         self.buddy_edit.setObjectName(u"buddy_edit")
         sizePolicy.setHeightForWidth(self.buddy_edit.sizePolicy().hasHeightForWidth())
         self.buddy_edit.setSizePolicy(sizePolicy)
@@ -111,15 +116,18 @@ class Ui_BuddyBuilder(object):
 
         self.buddy_layout.addWidget(self.buddy_edit)
 
-        self.buddy_tool = QToolButton(self.central_widget)
+        self.buddy_tool = QPushButton(BuddyBuilder)
         self.buddy_tool.setObjectName(u"buddy_tool")
+        self.buddy_tool.setMinimumSize(QSize(22, 22))
+        self.buddy_tool.setMaximumSize(QSize(22, 22))
+        self.buddy_tool.setBaseSize(QSize(22, 22))
 
         self.buddy_layout.addWidget(self.buddy_tool)
 
 
         self.create_layout.addLayout(self.buddy_layout)
 
-        self.not_empty_buddy = QLabel(self.central_widget)
+        self.not_empty_buddy = QLabel(BuddyBuilder)
         self.not_empty_buddy.setObjectName(u"not_empty_buddy")
         self.not_empty_buddy.setEnabled(True)
         self.not_empty_buddy.setStyleSheet(u"color: rgb(255, 0, 0);")
@@ -131,7 +139,7 @@ class Ui_BuddyBuilder(object):
         self.create_layout.addItem(self.vertical_spacer0)
 
 
-        self.horizontalLayout_2.addLayout(self.create_layout)
+        self.horizontalLayout.addLayout(self.create_layout)
 
         self.apply_layout_out = QVBoxLayout()
         self.apply_layout_out.setSpacing(6)
@@ -146,13 +154,13 @@ class Ui_BuddyBuilder(object):
 
         self.preview_layout.addItem(self.top_spacer)
 
-        self.profile_preview = QLabel(self.central_widget)
+        self.profile_preview = QLabel(BuddyBuilder)
         self.profile_preview.setObjectName(u"profile_preview")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.profile_preview.sizePolicy().hasHeightForWidth())
-        self.profile_preview.setSizePolicy(sizePolicy1)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.profile_preview.sizePolicy().hasHeightForWidth())
+        self.profile_preview.setSizePolicy(sizePolicy2)
         self.profile_preview.setMinimumSize(QSize(150, 150))
         self.profile_preview.setMaximumSize(QSize(150, 150))
         font1 = QFont()
@@ -169,10 +177,10 @@ class Ui_BuddyBuilder(object):
 
         self.preview_layout.addWidget(self.profile_preview)
 
-        self.mini_buddy_preview = QLabel(self.central_widget)
+        self.mini_buddy_preview = QLabel(BuddyBuilder)
         self.mini_buddy_preview.setObjectName(u"mini_buddy_preview")
-        sizePolicy1.setHeightForWidth(self.mini_buddy_preview.sizePolicy().hasHeightForWidth())
-        self.mini_buddy_preview.setSizePolicy(sizePolicy1)
+        sizePolicy2.setHeightForWidth(self.mini_buddy_preview.sizePolicy().hasHeightForWidth())
+        self.mini_buddy_preview.setSizePolicy(sizePolicy2)
         self.mini_buddy_preview.setMinimumSize(QSize(100, 100))
         self.mini_buddy_preview.setMaximumSize(QSize(100, 100))
         self.mini_buddy_preview.setLayoutDirection(Qt.RightToLeft)
@@ -195,12 +203,12 @@ class Ui_BuddyBuilder(object):
 
         self.apply_layout.addItem(self.left_spacer)
 
-        self.back_button = QPushButton(self.central_widget)
+        self.back_button = QPushButton(BuddyBuilder)
         self.back_button.setObjectName(u"back_button")
 
         self.apply_layout.addWidget(self.back_button)
 
-        self.create_button = QPushButton(self.central_widget)
+        self.create_button = QPushButton(BuddyBuilder)
         self.create_button.setObjectName(u"create_button")
 
         self.apply_layout.addWidget(self.create_button)
@@ -213,9 +221,8 @@ class Ui_BuddyBuilder(object):
         self.apply_layout_out.addLayout(self.apply_layout)
 
 
-        self.horizontalLayout_2.addLayout(self.apply_layout_out)
+        self.horizontalLayout.addLayout(self.apply_layout_out)
 
-        BuddyBuilder.setCentralWidget(self.central_widget)
 
         self.retranslateUi(BuddyBuilder)
 

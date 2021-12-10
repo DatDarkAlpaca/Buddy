@@ -1,6 +1,6 @@
 from PySide6.QtGui import QPixmap, QImage, QMovie
 from PySide6.QtCore import Qt, QPoint, QEvent
-from PySide6.QtWidgets import QMainWindow
+from PySide6.QtWidgets import QMainWindow, QMessageBox
 
 from compiled_ui.main_window import Ui_MainWindow
 from buddy_builder import BuddyBuilder
@@ -15,18 +15,25 @@ class MainApplication(QMainWindow, Ui_MainWindow):
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setupUi(self)
         self.statusBar()
+        self.loaded = False
 
         # Name:
-        self.buddy_name.setText(name)
+        if not name:
+            self.buddy_name.setText('Buddy')
+        else:
+            self.buddy_name.setText(name)
+            self.change_output('Hello, my name is ' + name + '!')
+            self.loaded = True
 
         # Profile Picture:
-        if isinstance(profile_picture, QImage):
-            self.buddy_display.setPixmap(QPixmap.fromImage(profile_picture))
+        if profile_picture:
+            if isinstance(profile_picture, QImage):
+                self.buddy_display.setPixmap(QPixmap.fromImage(profile_picture))
 
-        elif isinstance(profile_picture, str):
-            self.buddy_movie = QMovie(profile_picture)
-            self.buddy_display.setMovie(self.buddy_movie)
-            self.buddy_movie.start()
+            elif isinstance(profile_picture, str):
+                self.buddy_movie = QMovie(profile_picture)
+                self.buddy_display.setMovie(self.buddy_movie)
+                self.buddy_movie.start()
 
         # Mini Buddy:
         self.mini_buddy = MiniBuddy(self, mini_buddy_image)
@@ -49,7 +56,7 @@ class MainApplication(QMainWindow, Ui_MainWindow):
 
         # Settings button:
         self.settings_button.setIcon(QPixmap('res/setting.png'))
-        self.settings_button.clicked.connect(self.buddy_builder.show)
+        self.settings_button.clicked.connect(self.buddy_builder_method)
 
         # Close button:
         self.close_button.setIcon(QPixmap('res/close.png'))
@@ -61,7 +68,8 @@ class MainApplication(QMainWindow, Ui_MainWindow):
         if child:
             if child.objectName() == 'buddy_display':
                 if event.button() == Qt.LeftButton:
-                    self.show_mini_buddy()
+                    if self.loaded:
+                        self.show_mini_buddy()
 
     def mousePressEvent(self, event):
         self.offset = event.globalPosition().toPoint()
@@ -92,3 +100,18 @@ class MainApplication(QMainWindow, Ui_MainWindow):
     def hide_mini_buddy(self):
         self.mini_buddy.hide()
         self.show()
+
+    # Output
+    def change_output(self, text):
+        self.buddy_output.setText('<center>' + text + '</center>')
+
+    # Buddy Builder:
+    def buddy_builder_method(self):
+        self.buddy_builder.exec()
+
+        msg = QMessageBox()
+        msg.setWindowFlags(Qt.FramelessWindowHint)
+        msg.setText('You need to restart the application in order to update your changes.')
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.exec()
+

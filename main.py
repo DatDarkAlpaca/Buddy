@@ -10,15 +10,14 @@ if __name__ == '__main__':
     # Loading:
     buddy_save = check_for_saves()
 
-    name = 'Buddy'
+    name = None
     buddy_profile, mini_buddy = None, None
 
     if buddy_save:
         buddy_file = load_buddy(buddy_save)
-
-        name = buddy_file.get('name')
         buddy_profile = buddy_file.get('profile_picture')
         mini_buddy = buddy_file.get('mini_buddy_picture')
+        name = buddy_file.get('name')
 
     # Main Application:
     app = QApplication(sys.argv)

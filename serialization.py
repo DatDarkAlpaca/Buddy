@@ -37,7 +37,6 @@ class BuddyFile:
 
 
 # Saving:
-# Todo: reduce.
 def save_buddy(buddy_file: BuddyFile, filename):
     file = QFile(f"./saves/{filename}.ii")
     file.open(QIODevice.WriteOnly)
@@ -75,13 +74,11 @@ def save_buddy(buddy_file: BuddyFile, filename):
         remove(f"./saves/{filename}.ii")
 
         if profile_resource:
-            profile_resource.save('./saves/profile.gif', save_all=True)
-            profile_resource.close()
+            profile_resource.save('./saves/profile.gif', format='GIF', save_all=True, disposal=2)
             zip_file.write('./saves/profile.gif')
 
         if mini_buddy_resource:
-            mini_buddy_resource.save('./saves/buddy.gif', save_all=True)
-            mini_buddy_resource.close()
+            mini_buddy_resource.save('./saves/buddy.gif', format='GIF', save_all=True, disposal=2)
             zip_file.write('./saves/buddy.gif')
 
 
@@ -97,6 +94,7 @@ def load_buddy(filepath):
 
         for file in listdir(getcwd() + '/saves/'):
             if file.endswith('ii'):
+
                 q_file = QFile(getcwd() + '/saves/' + file)
                 q_file.open(QIODevice.ReadOnly)
 

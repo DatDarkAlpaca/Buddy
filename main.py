@@ -1,3 +1,6 @@
+# Special thanks to flaticon, joalfa, Ranah Pixel Studio
+# from Flaticon for the icons. I'll add an about page later.
+
 from PySide6.QtWidgets import QApplication
 from qt_material import apply_stylesheet
 import sys

@@ -15,12 +15,7 @@ class MiniBuddy(QMainWindow, Ui_MiniBuddy):
 
         # Mini Buddy:
         self.mini_buddy = None
-
-        if isinstance(mini_buddy_image, QImage):
-            self.mini_buddy = QPixmap().fromImage(mini_buddy_image)
-
-        elif isinstance(mini_buddy_image, str):
-            self.mini_buddy = QMovie(mini_buddy_image)
+        self.change_buddy(mini_buddy_image)
 
         # Variables:
         self.playing, self.dragging = True, False
@@ -69,6 +64,17 @@ class MiniBuddy(QMainWindow, Ui_MiniBuddy):
             delta = QPoint(event.globalPosition().toPoint() - self.offset)
             self.move(self.x() + delta.x(), self.y() + delta.y())
             self.offset = event.globalPosition().toPoint()
+
+    # Change Buddy:
+    def change_buddy(self, mini_buddy_image):
+        if isinstance(mini_buddy_image, QImage):
+            self.mini_buddy = QPixmap().fromImage(mini_buddy_image)
+            self.mini_buddy_display.setPixmap(self.mini_buddy)
+
+        elif isinstance(mini_buddy_image, str):
+            self.mini_buddy = QMovie(mini_buddy_image)
+            self.mini_buddy_display.setMovie(self.mini_buddy)
+            self.mini_buddy.start()
 
     # Helpers:
     def _set_background_color(self):

@@ -1,7 +1,7 @@
 from PySide6.QtGui import QImageReader, QPixmap, QImage
 from PySide6.QtCore import QFile, QIODevice, QDataStream
 from zipfile import ZipFile
-from os import path, listdir, remove, getcwd
+from os import path, listdir, remove, getcwd, mkdir
 from PIL import Image
 
 
@@ -38,7 +38,9 @@ class BuddyFile:
 
 # Saving:
 def save_buddy(buddy_file: BuddyFile, filename):
-    file = QFile(f"./saves/{filename}.ii")
+    mkdir(f'./saves/{filename}')
+
+    file = QFile(f"./saves/{filename}/{filename}.ii")
     file.open(QIODevice.WriteOnly)
 
     # Stream & Magic Number & Version:
@@ -69,66 +71,71 @@ def save_buddy(buddy_file: BuddyFile, filename):
     file.close()
 
     # Zipping:
-    with ZipFile(f"./saves/{buddy_file.name}.cif", 'w') as zip_file:
-        zip_file.write(f"./saves/{filename}.ii", f"{filename}.ii")
-        remove(f"./saves/{filename}.ii")
+    with ZipFile(f"./saves/{filename}/{filename}.cif", 'w') as zip_file:
+        zip_file.write(f"./saves/{filename}/{filename}.ii", f"{filename}/{filename}.ii")
+        remove(f"./saves/{filename}/{filename}.ii")
 
         if profile_resource:
-            profile_resource.save('./saves/profile.gif', format='GIF', save_all=True, disposal=2)
-            zip_file.write('./saves/profile.gif', 'profile.gif')
+            profile_resource.save(f"./saves/{filename}/{filename}-profile.gif", format='GIF', save_all=True, disposal=2)
+            zip_file.write(f"./saves/{filename}/{filename}-profile.gif", f"{filename}/{filename}-profile.gif")
 
         if mini_buddy_resource:
-            mini_buddy_resource.save('./saves/buddy.gif', format='GIF', save_all=True, disposal=2)
-            zip_file.write('./saves/buddy.gif', 'buddy.gif')
+            mini_buddy_resource.save(f"./saves/{filename}/{filename}-buddy.gif", format='GIF', save_all=True, disposal=2)
+            zip_file.write(f"./saves/{filename}/{filename}-buddy.gif", f"{filename}/{filename}-buddy.gif")
 
 
 # Load:
-def load_buddy(filepath):
+def load_buddy(filepath, filename):
     name = ''
     profile_image = None
     buddy_image = None
 
+    if not filename:
+        filename = check_for_saves()
+        if not filename:
+            return
+
     # Unzip:
+    filename = filename.replace('.cif', '')
+
     with ZipFile(filepath, 'r') as zip_file:
         zip_file.extractall(getcwd() + '/saves/')
-        for file in listdir(getcwd() + '/saves/'):
-            if file.endswith('ii'):
+        q_file = QFile(f"{getcwd()}/saves/{filename}/{filename}.ii")
 
-                q_file = QFile(getcwd() + '/saves/' + file)
-                q_file.open(QIODevice.ReadOnly)
+        q_file.open(QIODevice.ReadOnly)
 
-                # Stream & Magic Number & Version:
-                in_file = QDataStream(q_file)
+        # Stream & Magic Number & Version:
+        in_file = QDataStream(q_file)
 
-                magic = in_file.readInt32()
-                if magic != 0x0000C0D1:
-                    raise Exception('Bad file format.')
+        magic = in_file.readInt32()
+        if magic != 0x0000C0D1:
+            raise Exception('Bad file format.')
 
-                # Name:
-                name = in_file.readString()
+        # Name:
+        name = in_file.readString()
 
-                # Profile Picture:
-                exists_profile = in_file.readBool()
+        # Profile Picture:
+        exists_profile = in_file.readBool()
 
-                if exists_profile:
-                    profile_image = QImage()
-                    in_file >> profile_image
+        if exists_profile:
+            profile_image = QImage()
+            in_file >> profile_image
 
-                # Buddy Picture:
-                exists_buddy = in_file.readBool()
+        # Buddy Picture:
+        exists_buddy = in_file.readBool()
 
-                if exists_buddy:
-                    buddy_image = QImage()
-                    in_file >> buddy_image
+        if exists_buddy:
+            buddy_image = QImage()
+            in_file >> buddy_image
 
-                q_file.close()
+        q_file.close()
 
-                remove(getcwd() + '/saves/' + file)
+        remove(f"{getcwd()}/saves/{filename}/{filename}.ii")
 
-            if file == 'profile.gif':
-                profile_image = getcwd() + '/saves/' + 'profile.gif'
+        if path.isfile(f"./saves/{filename}/{filename}-profile.gif"):
+            profile_image = f"./saves/{filename}/{filename}-profile.gif"
 
-            if file == 'buddy.gif':
-                buddy_image = getcwd() + '/saves/' + 'buddy.gif'
+        if path.isfile(f"./saves/{filename}/{filename}-buddy.gif"):
+            buddy_image = f"./saves/{filename}/{filename}-buddy.gif"
 
     return {'name': name, 'profile_picture': profile_image, 'mini_buddy_picture': buddy_image}

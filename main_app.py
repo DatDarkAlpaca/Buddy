@@ -1,10 +1,15 @@
+from PySide6.QtWidgets import QMainWindow, QMessageBox, QFileDialog
 from PySide6.QtGui import QPixmap, QImage, QMovie
 from PySide6.QtCore import Qt, QPoint, QEvent
-from PySide6.QtWidgets import QMainWindow, QMessageBox
 
 from compiled_ui.main_window import Ui_MainWindow
 from buddy_builder import BuddyBuilder
 from mini_buddy import MiniBuddy
+
+from serialization import load_buddy
+from pathlib import Path
+
+from os.path import basename
 
 
 class MainApplication(QMainWindow, Ui_MainWindow):
@@ -15,6 +20,8 @@ class MainApplication(QMainWindow, Ui_MainWindow):
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setupUi(self)
         self.statusBar()
+
+        self.buddy_movie = QMovie()
         self.loaded = False
 
         # Name:
@@ -26,14 +33,7 @@ class MainApplication(QMainWindow, Ui_MainWindow):
             self.loaded = True
 
         # Profile Picture:
-        if profile_picture:
-            if isinstance(profile_picture, QImage):
-                self.buddy_display.setPixmap(QPixmap.fromImage(profile_picture))
-
-            elif isinstance(profile_picture, str):
-                self.buddy_movie = QMovie(profile_picture)
-                self.buddy_display.setMovie(self.buddy_movie)
-                self.buddy_movie.start()
+        self.change_buddy(profile_picture)
 
         # Mini Buddy:
         self.mini_buddy = MiniBuddy(self, mini_buddy_image)
@@ -57,6 +57,10 @@ class MainApplication(QMainWindow, Ui_MainWindow):
         # Settings button:
         self.settings_button.setIcon(QPixmap('res/setting.png'))
         self.settings_button.clicked.connect(self.buddy_builder_method)
+
+        # Import button:
+        self.import_button.setIcon(QPixmap('res/import.png'))
+        self.import_button.clicked.connect(self.import_buddy)
 
         # Close button:
         self.close_button.setIcon(QPixmap('res/close.png'))
@@ -105,13 +109,55 @@ class MainApplication(QMainWindow, Ui_MainWindow):
     def change_output(self, text):
         self.buddy_output.setText('<center>' + text + '</center>')
 
+    # Import Buddy:
+    def change_buddy(self, buddy_profile):
+        if buddy_profile:
+            if isinstance(buddy_profile, QImage):
+                self.buddy_display.setPixmap(QPixmap.fromImage(buddy_profile))
+
+            elif isinstance(buddy_profile, str):
+                self.buddy_movie = QMovie(buddy_profile)
+                self.buddy_display.setMovie(self.buddy_movie)
+                self.buddy_movie.start()
+
+    def import_buddy(self):
+        path, _ = QFileDialog.getOpenFileName(self, 'Open file',
+                                              str(Path().resolve()), 'Image files (*.cif)')
+        if path == '':
+            return
+
+        buddy_file = load_buddy(path, basename(path))
+        buddy_profile = buddy_file.get('profile_picture')
+        mini_buddy = buddy_file.get('mini_buddy_picture')
+        name = buddy_file.get('name')
+
+        self.mini_buddy.change_buddy(mini_buddy)
+
+        self.change_buddy(buddy_profile)
+
+        self.buddy_name.setText(name)
+
+        self.change_output('Hello, my name is ' + name + '!')
+
+        self.loaded = True
+
     # Buddy Builder:
     def buddy_builder_method(self):
         self.buddy_builder.exec()
 
-        msg = QMessageBox()
-        msg.setWindowFlags(Qt.FramelessWindowHint)
-        msg.setText('You need to restart the application in order to update your changes.')
-        msg.setStandardButtons(QMessageBox.Ok)
-        msg.exec()
+        buddy_name = self.buddy_builder.file_save
+        buddy_file = load_buddy(f"./saves/{buddy_name}/{buddy_name}.cif", buddy_name)
+        buddy_profile = buddy_file.get('profile_picture')
+        mini_buddy = buddy_file.get('mini_buddy_picture')
+        name = buddy_file.get('name')
+
+        self.mini_buddy.change_buddy(mini_buddy)
+
+        self.change_buddy(buddy_profile)
+
+        self.buddy_name.setText(name)
+
+        self.change_output('Hello, my name is ' + name + '!')
+
+        self.loaded = True
 

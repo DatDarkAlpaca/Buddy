@@ -64,14 +64,28 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout.addWidget(self.minimize_button)
 
+        self.import_button = QPushButton(self.central_widget)
+        self.import_button.setObjectName(u"import_button")
+        sizePolicy1.setHeightForWidth(self.import_button.sizePolicy().hasHeightForWidth())
+        self.import_button.setSizePolicy(sizePolicy1)
+        self.import_button.setMinimumSize(QSize(16, 16))
+        self.import_button.setMaximumSize(QSize(16, 16))
+        self.import_button.setLayoutDirection(Qt.LeftToRight)
+        icon1 = QIcon()
+        icon1.addFile(u"../res/import.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.import_button.setIcon(icon1)
+        self.import_button.setFlat(True)
+
+        self.horizontalLayout.addWidget(self.import_button)
+
         self.settings_button = QPushButton(self.central_widget)
         self.settings_button.setObjectName(u"settings_button")
         self.settings_button.setMinimumSize(QSize(16, 16))
         self.settings_button.setMaximumSize(QSize(16, 16))
         self.settings_button.setLayoutDirection(Qt.RightToLeft)
-        icon1 = QIcon()
-        icon1.addFile(u"../res/setting.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.settings_button.setIcon(icon1)
+        icon2 = QIcon()
+        icon2.addFile(u"../res/setting.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.settings_button.setIcon(icon2)
         self.settings_button.setFlat(True)
 
         self.horizontalLayout.addWidget(self.settings_button)
@@ -82,9 +96,9 @@ class Ui_MainWindow(object):
         self.close_button.setSizePolicy(sizePolicy1)
         self.close_button.setMinimumSize(QSize(16, 16))
         self.close_button.setMaximumSize(QSize(16, 16))
-        icon2 = QIcon()
-        icon2.addFile(u"../res/close.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.close_button.setIcon(icon2)
+        icon3 = QIcon()
+        icon3.addFile(u"../res/close.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.close_button.setIcon(icon3)
         self.close_button.setFlat(True)
 
         self.horizontalLayout.addWidget(self.close_button)
@@ -156,6 +170,7 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Buddy v1.0", None))
         self.buddy_name.setText(QCoreApplication.translate("MainWindow", u"Buddy", None))
         self.minimize_button.setText("")
+        self.import_button.setText("")
         self.settings_button.setText("")
         self.close_button.setText("")
         self.buddy_display.setText("")
@@ -163,7 +178,7 @@ class Ui_MainWindow(object):
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">It loosk like you haven't created a Buddy yet.</p>\n"
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">It looks like you haven't created a Buddy yet.</p>\n"
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Click the gear icon to create one!</p></body></html>", None))
         self.feed_button.setText(QCoreApplication.translate("MainWindow", u"Feed", None))
         self.play_button.setText(QCoreApplication.translate("MainWindow", u"Play", None))

@@ -13,6 +13,7 @@ class BuddyBuilder(QDialog, Ui_BuddyBuilder):
         self.setupUi(self)
 
         # Validation:
+        self.file_save = ''
         self.valid = True
 
         self.initialize()
@@ -63,7 +64,8 @@ class BuddyBuilder(QDialog, Ui_BuddyBuilder):
         if self.valid:
             buddy_obj = BuddyFile(self.name_edit.text(), self.profile_path, self.mini_buddy_path)
 
-            save_buddy(buddy_obj, self.name_edit.text().replace(' ', '-'))
+            self.file_save = self.name_edit.text().replace(' ', '-')
+            save_buddy(buddy_obj, self.file_save)
 
             self.close()
 

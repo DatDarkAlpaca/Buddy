@@ -93,7 +93,7 @@ class Ui_MainWindow(object):
         sizePolicy1.setHeightForWidth(self.buddy_display.sizePolicy().hasHeightForWidth())
         self.buddy_display.setSizePolicy(sizePolicy1)
         self.buddy_display.setPixmap(QPixmap(u"../gura.png"))
-        self.buddy_display.setScaledContents(True)
+        self.buddy_display.setScaledContents(False)
         self.buddy_display.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout.addWidget(self.buddy_display)

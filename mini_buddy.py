@@ -6,7 +6,7 @@ from compiled_ui.mini_buddy import Ui_MiniBuddy
 
 
 class MiniBuddy(QMainWindow, Ui_MiniBuddy):
-    def __init__(self, parent, mini_buddy_image):
+    def __init__(self, parent=None, mini_buddy_image=None):
         super().__init__(parent)
         self.setupUi(self)
 

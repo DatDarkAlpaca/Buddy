@@ -226,7 +226,7 @@
      </layout>
     </item>
     <item>
-     <widget class="QLabel" name="buddy_display">
+     <widget class="Display" name="buddy_display">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
@@ -337,6 +337,13 @@ p, li { white-space: pre-wrap; }
    </layout>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Display</class>
+   <extends>QLabel</extends>
+   <header>display</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

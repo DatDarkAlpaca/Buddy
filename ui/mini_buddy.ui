@@ -52,7 +52,7 @@
      <number>0</number>
     </property>
     <item row="0" column="0">
-     <widget class="QLabel" name="mini_buddy_display">
+     <widget class="Display" name="mini_buddy_display">
       <property name="text">
        <string/>
       </property>
@@ -70,6 +70,13 @@
    </layout>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Display</class>
+   <extends>QLabel</extends>
+   <header>display</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

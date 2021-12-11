@@ -1,46 +1,65 @@
-from PySide6.QtGui import QImageReader, QPixmap, QImage
 from PySide6.QtCore import QFile, QIODevice, QDataStream
-from zipfile import ZipFile
-from os import path, listdir, remove, getcwd, mkdir
-from PIL import Image
+from PySide6.QtGui import QImageReader, QImage
+
+from os import walk, mkdir, path
+from PIL import Image, ImageQt
+
+
+# Converts GIF into images.
+def convert_gif_into_frames(filepath):
+    image = Image.open(filepath)
+    # palette = image.getpalette()
+
+    frames = []
+    try:
+        while True:
+            # image.putpalette(palette)
+            frame = Image.new('RGBA', image.size)
+            frame.paste(image)
+
+            frames.append(ImageQt.ImageQt(frame))
+
+            image.seek(image.tell() + 1)
+    except EOFError:
+        pass
+
+    return frames
 
 
 # Locate saves:
 def check_for_saves():
     if path.isdir('./saves/'):
-        for file in listdir('./saves/'):
-            if file.endswith('.cif'):
-                return './saves/' + file
+        for _, _, files in walk('./saves/'):
+            for file in files:
+                if file.endswith('.buddy'):
+                    return file
 
 
 # Buddy file:
 class BuddyFile:
     def __init__(self, name='', profile_path='', buddy_path=''):
-        self.is_profile_image, self.is_buddy_image = [True] * 2
-
         # Profile Picture:
         image_reader = QImageReader(profile_path)
         if image_reader.supportsAnimation() and image_reader.imageCount() > 1:
-            self.is_profile_image = False
+            self.profile_picture = convert_gif_into_frames(profile_path)
         else:
-            self.profile_picture = QPixmap(profile_path)
+            self.profile_picture = [QImage(profile_path)]
 
         # Mini Buddy Picture:
         image_reader = QImageReader(buddy_path)
         if image_reader.supportsAnimation() and image_reader.imageCount() > 1:
-            self.is_buddy_image = False
+            self.buddy_picture = convert_gif_into_frames(buddy_path)
         else:
-            self.buddy_picture = QPixmap(buddy_path)
+            self.buddy_picture = [QImage(buddy_path)]
 
-        self.profile_picture_path, self.buddy_picture_path = profile_path, buddy_path
         self.name = name
 
 
-# Saving:
 def save_buddy(buddy_file: BuddyFile, filename):
     mkdir(f'./saves/{filename}')
 
-    file = QFile(f"./saves/{filename}/{filename}.ii")
+    # Serializing:
+    file = QFile(f"./saves/{filename}/{filename}.buddy")
     file.open(QIODevice.WriteOnly)
 
     # Stream & Magic Number & Version:
@@ -50,92 +69,98 @@ def save_buddy(buddy_file: BuddyFile, filename):
     # Name:
     out.writeString(buddy_file.name)
 
-    # Profile Picture:
-    profile_resource = None
-    if buddy_file.is_profile_image:
-        out.writeInt8(True)
-        out << buddy_file.profile_picture.toImage()
+    # Profile Picture(s):
+    profile_frame_size = len(buddy_file.profile_picture)
+    if profile_frame_size == 1:
+        out.writeInt8(0x0A)
+        if isinstance(buddy_file.profile_picture[0], QImage):
+            out << buddy_file.profile_picture[0]
+        else:
+            raise Exception('When saving single image, received an invalid profile picture type.')
     else:
-        out.writeBool(False)
-        profile_resource = Image.open(buddy_file.profile_picture_path)
+        out.writeInt8(0x0B)
+        if isinstance(buddy_file.profile_picture, list):
+            out.writeInt16(profile_frame_size)
+            for frame in buddy_file.profile_picture:
+                out << frame
+        else:
+            raise Exception('When saving multiple images, received an invalid profile picture type.')
 
-    # Mini Buddy Picture:
-    mini_buddy_resource = None
-    if buddy_file.is_buddy_image:
-        out.writeBool(True)
-        out << buddy_file.buddy_picture.toImage()
+    # Buddy Picture(s):
+    mini_buddy_frame_size = len(buddy_file.buddy_picture)
+    if mini_buddy_frame_size == 1:
+        out.writeInt8(0x0A)
+        if isinstance(buddy_file.buddy_picture[0], QImage):
+            out << buddy_file.buddy_picture[0]
+        else:
+            print(type(buddy_file.buddy_picture))
+            raise Exception('When saving single image, received an invalid profile picture type.')
     else:
-        out.writeBool(False)
-        mini_buddy_resource = Image.open(buddy_file.buddy_picture_path)
+        out.writeInt8(0x0B)
+        if isinstance(buddy_file.buddy_picture, list):
+            out.writeInt16(mini_buddy_frame_size)
+            for frame in buddy_file.buddy_picture:
+                out << frame
+        else:
+            raise Exception('When saving multiple images, received an invalid profile picture type.')
 
     file.close()
-
-    # Zipping:
-    with ZipFile(f"./saves/{filename}/{filename}.cif", 'w') as zip_file:
-        zip_file.write(f"./saves/{filename}/{filename}.ii", f"{filename}/{filename}.ii")
-        remove(f"./saves/{filename}/{filename}.ii")
-
-        if profile_resource:
-            profile_resource.save(f"./saves/{filename}/{filename}-profile.gif", format='GIF', save_all=True, disposal=2)
-            zip_file.write(f"./saves/{filename}/{filename}-profile.gif", f"{filename}/{filename}-profile.gif")
-
-        if mini_buddy_resource:
-            mini_buddy_resource.save(f"./saves/{filename}/{filename}-buddy.gif", format='GIF', save_all=True, disposal=2)
-            zip_file.write(f"./saves/{filename}/{filename}-buddy.gif", f"{filename}/{filename}-buddy.gif")
 
 
 # Load:
 def load_buddy(filepath, filename):
-    name = ''
-    profile_image = None
-    buddy_image = None
-
+    print(filename)
     if not filename:
         filename = check_for_saves()
         if not filename:
             return
 
-    # Unzip:
-    filename = filename.replace('.cif', '')
+    filename = filename.replace('.buddy', '')
 
-    with ZipFile(filepath, 'r') as zip_file:
-        zip_file.extractall(getcwd() + '/saves/')
-        q_file = QFile(f"{getcwd()}/saves/{filename}/{filename}.ii")
+    # Deserializing:
+    file = QFile(f"./saves/{filename}/{filename}.buddy")
+    file.open(QIODevice.ReadOnly)
 
-        q_file.open(QIODevice.ReadOnly)
+    # Stream & Magic Number & Version:
+    out = QDataStream(file)
+    magic = out.readInt32()
 
-        # Stream & Magic Number & Version:
-        in_file = QDataStream(q_file)
+    if not magic == 0x0000C0D1:
+        raise Exception('Version or validation number mismatch.')
 
-        magic = in_file.readInt32()
-        if magic != 0x0000C0D1:
-            raise Exception('Bad file format.')
+    # Name:
+    name = out.readString()
 
-        # Name:
-        name = in_file.readString()
+    # Profile Picture:
+    profile_type = out.readInt8()
+    if profile_type == 0x0A:
+        profile_image = QImage()
+        out >> profile_image
+    elif profile_type == 0x0B:
+        frame_count = out.readInt16()
+        profile_image = []
+        for _ in range(frame_count):
+            image = QImage()
+            out >> image
 
-        # Profile Picture:
-        exists_profile = in_file.readBool()
+            profile_image.append(image)
+    else:
+        raise Exception('Profile type not found.')
 
-        if exists_profile:
-            profile_image = QImage()
-            in_file >> profile_image
+    # Profile Picture:
+    buddy_type = out.readInt8()
+    if buddy_type == 0x0A:
+        buddy_image = QImage()
+        out >> buddy_image
+    elif buddy_type == 0x0B:
+        frame_count = out.readInt16()
+        buddy_image = []
+        for _ in range(frame_count):
+            image = QImage()
+            out >> image
 
-        # Buddy Picture:
-        exists_buddy = in_file.readBool()
-
-        if exists_buddy:
-            buddy_image = QImage()
-            in_file >> buddy_image
-
-        q_file.close()
-
-        remove(f"{getcwd()}/saves/{filename}/{filename}.ii")
-
-        if path.isfile(f"./saves/{filename}/{filename}-profile.gif"):
-            profile_image = f"./saves/{filename}/{filename}-profile.gif"
-
-        if path.isfile(f"./saves/{filename}/{filename}-buddy.gif"):
-            buddy_image = f"./saves/{filename}/{filename}-buddy.gif"
+            buddy_image.append(image)
+    else:
+        raise Exception('Buddy type not found.')
 
     return {'name': name, 'profile_picture': profile_image, 'mini_buddy_picture': buddy_image}

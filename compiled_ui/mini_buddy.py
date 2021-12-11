@@ -12,6 +12,8 @@ from PySide6.QtCore import *  # type: ignore
 from PySide6.QtGui import *  # type: ignore
 from PySide6.QtWidgets import *  # type: ignore
 
+from display import Display
+
 
 class Ui_MiniBuddy(object):
     def setupUi(self, MiniBuddy):
@@ -35,7 +37,7 @@ class Ui_MiniBuddy(object):
         self.gridLayout = QGridLayout(self.central_widget)
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
-        self.mini_buddy_display = QLabel(self.central_widget)
+        self.mini_buddy_display = Display(self.central_widget)
         self.mini_buddy_display.setObjectName(u"mini_buddy_display")
         self.mini_buddy_display.setPixmap(QPixmap(u"../gura.png"))
         self.mini_buddy_display.setScaledContents(True)

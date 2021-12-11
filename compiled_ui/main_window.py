@@ -12,6 +12,8 @@ from PySide6.QtCore import *  # type: ignore
 from PySide6.QtGui import *  # type: ignore
 from PySide6.QtWidgets import *  # type: ignore
 
+from display import Display
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -106,7 +108,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addLayout(self.horizontalLayout)
 
-        self.buddy_display = QLabel(self.central_widget)
+        self.buddy_display = Display(self.central_widget)
         self.buddy_display.setObjectName(u"buddy_display")
         sizePolicy2 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy2.setHorizontalStretch(0)

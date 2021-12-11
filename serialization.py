@@ -93,7 +93,6 @@ def save_buddy(buddy_file: BuddyFile, filename):
         if isinstance(buddy_file.buddy_picture[0], QImage):
             out << buddy_file.buddy_picture[0]
         else:
-            print(type(buddy_file.buddy_picture))
             raise Exception('When saving single image, received an invalid profile picture type.')
     else:
         out.writeInt8(0x0B)
@@ -109,7 +108,6 @@ def save_buddy(buddy_file: BuddyFile, filename):
 
 # Load:
 def load_buddy(filepath, filename):
-    print(filename)
     if not filename:
         filename = check_for_saves()
         if not filename:

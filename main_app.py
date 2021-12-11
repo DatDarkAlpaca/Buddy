@@ -40,10 +40,15 @@ class MainApplication(QMainWindow, Ui_MainWindow):
         # Loading the first available buddy:
         buddy_file = load_buddy('/saves/', None)
         name, buddy_profile, mini_buddy_image = [None] * 3
+
         if buddy_file:
-            buddy_profile = buddy_file.get('profile_picture')
-            mini_buddy_image = buddy_file.get('mini_buddy_picture')
             name = buddy_file.get('name')
+
+            # Profile Picture:
+            self.buddy_display.set_buddy(buddy_file.get('profile_picture'))
+
+            # Buddy Picture:
+            self.mini_buddy.mini_buddy_display.set_buddy(buddy_file.get('mini_buddy_picture'))
 
         # Name:
         if not name:
@@ -52,12 +57,6 @@ class MainApplication(QMainWindow, Ui_MainWindow):
             self.buddy_name.setText(name)
             self.change_output('Hello, my name is ' + name + '!')
             self.loaded = True
-
-        # Profile Picture:
-        self.buddy_display.set_buddy(buddy_profile)
-
-        # Buddy Picture:
-        self.mini_buddy.mini_buddy_display.set_buddy(mini_buddy_image)
 
     def bind_buttons(self):
         # Minimize button:
@@ -141,21 +140,16 @@ class MainApplication(QMainWindow, Ui_MainWindow):
             return
 
         buddy_file = load_buddy(path, basename(path))
+        if buddy_file:
+            # Profile Picture:
+            self.buddy_display.set_buddy(buddy_file.get('profile_picture'))
 
-        if not buddy_file:
-            return
+            # Buddy Picture:
+            self.mini_buddy.mini_buddy_display.set_buddy(buddy_file.get('mini_buddy_picture'))
 
-        buddy_profile = buddy_file.get('profile_picture')
-        mini_buddy = buddy_file.get('mini_buddy_picture')
-        name = buddy_file.get('name')
-
-        self.mini_buddy.mini_buddy_display.set_buddy(mini_buddy)
-
-        self.buddy_display.set_buddy(buddy_profile)
-
-        self.buddy_name.setText(name)
-
-        self.change_output('Hello, my name is ' + name + '!')
+            # Name:
+            self.buddy_name.setText(buddy_file.get('name'))
+            self.change_output('Hello, my name is ' + self.buddy_name.text() + '!')
 
         self.loaded = True
 
@@ -169,16 +163,15 @@ class MainApplication(QMainWindow, Ui_MainWindow):
         if not buddy_file:
             return
 
-        buddy_profile = buddy_file.get('profile_picture')
-        mini_buddy = buddy_file.get('mini_buddy_picture')
-        name = buddy_file.get('name')
+        if buddy_file:
+            # Profile Picture:
+            self.buddy_display.set_buddy(buddy_file.get('profile_picture'))
 
-        self.mini_buddy.mini_buddy_display.set_buddy(mini_buddy)
+            # Buddy Picture:
+            self.mini_buddy.mini_buddy_display.set_buddy(buddy_file.get('mini_buddy_picture'))
 
-        self.buddy_display.set_buddy(buddy_profile)
-
-        self.buddy_name.setText(name)
-
-        self.change_output('Hello, my name is ' + name + '!')
+            # Name:
+            self.buddy_name.setText(buddy_file.get('name'))
+            self.change_output('Hello, my name is ' + self.buddy_name.text() + '!')
 
         self.loaded = True

@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QMainWindow, QMessageBox, QFileDialog
+from PySide6.QtWidgets import QMainWindow, QFileDialog
 from PySide6.QtGui import QPixmap, QImage, QMovie
 from PySide6.QtCore import Qt, QPoint, QEvent
 
@@ -13,7 +13,7 @@ from os.path import basename
 
 
 class MainApplication(QMainWindow, Ui_MainWindow):
-    def __init__(self, parent=None, name=None, profile_picture=None, mini_buddy_image=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
 
         # Setup:
@@ -24,6 +24,14 @@ class MainApplication(QMainWindow, Ui_MainWindow):
         self.buddy_movie = QMovie()
         self.loaded = False
 
+        # Loading initial buddy:
+        buddy_file = load_buddy('/saves/', None)
+        name, buddy_profile, mini_buddy_image = [None] * 3
+        if buddy_file:
+            buddy_profile = buddy_file.get('profile_picture')
+            mini_buddy_image = buddy_file.get('mini_buddy_picture')
+            name = buddy_file.get('name')
+
         # Name:
         if not name:
             self.buddy_name.setText('Buddy')
@@ -33,7 +41,7 @@ class MainApplication(QMainWindow, Ui_MainWindow):
             self.loaded = True
 
         # Profile Picture:
-        self.change_buddy(profile_picture)
+        self.change_buddy(buddy_profile)
 
         # Mini Buddy:
         self.mini_buddy = MiniBuddy(self, mini_buddy_image)
@@ -66,6 +74,11 @@ class MainApplication(QMainWindow, Ui_MainWindow):
         self.close_button.setIcon(QPixmap('res/close.png'))
         self.close_button.clicked.connect(self.close)
 
+        # Action buttons::
+        self.feed_button.clicked.connect(self.feed_action)
+        self.play_button.clicked.connect(self.play_action)
+        self.sleep_button.clicked.connect(self.sleep_action)
+
     # Events:
     def mouseDoubleClickEvent(self, event):
         child = self.childAt(event.position().toPoint())
@@ -95,6 +108,16 @@ class MainApplication(QMainWindow, Ui_MainWindow):
             self.hide_mini_buddy()
 
         return super().eventFilter(obj, event)
+
+    # Actions:
+    def feed_action(self):
+        self.change_output('Nom nom nom')
+
+    def play_action(self):
+        self.change_buddy('Yay! such playing')
+
+    def sleep_action(self):
+        self.change_output('*snore')
 
     # Mini Buddy Methods:
     def show_mini_buddy(self):
@@ -160,4 +183,3 @@ class MainApplication(QMainWindow, Ui_MainWindow):
         self.change_output('Hello, my name is ' + name + '!')
 
         self.loaded = True
-

@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QMainWindow, QFileDialog
+from PySide6.QtWidgets import QMainWindow, QFileDialog, QMessageBox
 from PySide6.QtCore import Qt, QPoint, QEvent
 from PySide6.QtGui import QPixmap
 
@@ -14,11 +14,6 @@ from pathlib import Path
 class MainApplication(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
-
-        # Setup:
-        self.setWindowFlags(Qt.FramelessWindowHint)
-        self.setupUi(self)
-        self.statusBar()
 
         # Mini Buddy:
         self.mini_buddy = MiniBuddy(self)
@@ -37,26 +32,15 @@ class MainApplication(QMainWindow, Ui_MainWindow):
 
     # Initialize:
     def initialize(self):
-        # Loading the first available buddy:
-        buddy_file = load_buddy('/saves/', None)
-        name, buddy_profile, mini_buddy_image = [None] * 3
+        self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setupUi(self)
+        self.statusBar()
 
-        if buddy_file:
-            name = buddy_file.get('name')
-
-            # Profile Picture:
-            self.buddy_display.set_buddy(buddy_file.get('profile_picture'))
-
-            # Buddy Picture:
-            self.mini_buddy.mini_buddy_display.set_buddy(buddy_file.get('mini_buddy_picture'))
+        self.load_buddy()
 
         # Name:
-        if not name:
+        if self.buddy_name.text() == '':
             self.buddy_name.setText('Buddy')
-        else:
-            self.buddy_name.setText(name)
-            self.change_output('Hello, my name is ' + name + '!')
-            self.loaded = True
 
     def bind_buttons(self):
         # Minimize button:
@@ -65,11 +49,11 @@ class MainApplication(QMainWindow, Ui_MainWindow):
 
         # Settings button:
         self.settings_button.setIcon(QPixmap('res/setting.png'))
-        self.settings_button.clicked.connect(self.buddy_builder_method)
+        # self.settings_button.clicked.connect(self.buddy_builder_method)
 
         # Import button:
         self.import_button.setIcon(QPixmap('res/import.png'))
-        self.import_button.clicked.connect(self.import_buddy)
+        self.import_button.clicked.connect(self.new_buddy_action)
 
         # Close button:
         self.close_button.setIcon(QPixmap('res/close.png'))
@@ -129,17 +113,43 @@ class MainApplication(QMainWindow, Ui_MainWindow):
         self.mini_buddy.hide()
         self.show()
 
-    # Output
-    def change_output(self, text):
-        self.buddy_output.setText('<center>' + text + '</center>')
+    # Buddy Builder:
+    def new_buddy_action(self):
+        dialog = QMessageBox()
+        dialog.setText('Would you like to create or import a Buddy?')
+        dialog.setWindowTitle('Buddy')
+
+        dialog.addButton(dialog.Close)
+        dialog.addButton('Create', dialog.ActionRole)
+        dialog.addButton('Import', dialog.ActionRole)
+
+        button_option = dialog.exec()
+
+        if button_option == 0:
+            dialog.close()
+            self.import_buddy()
+
+        elif button_option == 1:
+            dialog.close()
+            self.buddy_builder_method()
+
+    def buddy_builder_method(self):
+        self.buddy_builder.exec()
+
+        self.load_buddy(self.buddy_builder.file_save)
 
     def import_buddy(self):
         path, _ = QFileDialog.getOpenFileName(self, 'Open file',
                                               str(Path().resolve()), 'Image files (*.buddy)')
-        if path == '':
-            return
 
-        buddy_file = load_buddy(path, basename(path))
+        self.load_buddy(basename(path))
+
+    # Helper:
+    def change_output(self, text):
+        self.buddy_output.setText('<center>' + text + '</center>')
+
+    def load_buddy(self, path=None):
+        buddy_file = load_buddy(path)
         if buddy_file:
             # Profile Picture:
             self.buddy_display.set_buddy(buddy_file.get('profile_picture'))
@@ -151,27 +161,4 @@ class MainApplication(QMainWindow, Ui_MainWindow):
             self.buddy_name.setText(buddy_file.get('name'))
             self.change_output('Hello, my name is ' + self.buddy_name.text() + '!')
 
-        self.loaded = True
-
-    # Buddy Builder:
-    def buddy_builder_method(self):
-        self.buddy_builder.exec()
-
-        buddy_name = self.buddy_builder.file_save
-        buddy_file = load_buddy(f"./saves/{buddy_name}/{buddy_name}.cif", buddy_name)
-
-        if not buddy_file:
-            return
-
-        if buddy_file:
-            # Profile Picture:
-            self.buddy_display.set_buddy(buddy_file.get('profile_picture'))
-
-            # Buddy Picture:
-            self.mini_buddy.mini_buddy_display.set_buddy(buddy_file.get('mini_buddy_picture'))
-
-            # Name:
-            self.buddy_name.setText(buddy_file.get('name'))
-            self.change_output('Hello, my name is ' + self.buddy_name.text() + '!')
-
-        self.loaded = True
+            self.loaded = True

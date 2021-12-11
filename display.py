@@ -18,6 +18,8 @@ class Display(QLabel):
         self.timer.start(self.delay)
 
     def set_buddy(self, buddy_resource):
+        self.frames.clear()
+
         if isinstance(buddy_resource, QImage):
             self.frames.append(buddy_resource)
 

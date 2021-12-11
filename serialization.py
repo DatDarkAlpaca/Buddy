@@ -107,7 +107,7 @@ def save_buddy(buddy_file: BuddyFile, filename):
 
 
 # Load:
-def load_buddy(filepath, filename):
+def load_buddy(filename=None):
     if not filename:
         filename = check_for_saves()
         if not filename:

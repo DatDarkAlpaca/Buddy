@@ -102,7 +102,7 @@ class MainApplication(QMainWindow, Ui_MainWindow):
         self.change_output('Yay! such playing')
 
     def sleep_action(self):
-        self.change_output('*snore')
+        self.change_output('Snore')
 
     # Mini Buddy Methods:
     def show_mini_buddy(self):
@@ -120,25 +120,25 @@ class MainApplication(QMainWindow, Ui_MainWindow):
         dialog.setWindowTitle('Buddy')
 
         dialog.addButton(dialog.Close)
-        dialog.addButton('Create', dialog.ActionRole)
         dialog.addButton('Import', dialog.ActionRole)
+        dialog.addButton('Create', dialog.ActionRole)
 
         button_option = dialog.exec()
 
         if button_option == 0:
             dialog.close()
-            self.import_buddy()
+            self.import_buddy_action()
 
         elif button_option == 1:
             dialog.close()
-            self.buddy_builder_method()
+            self.buddy_builder_action()
 
-    def buddy_builder_method(self):
+    def buddy_builder_action(self):
         self.buddy_builder.exec()
 
         self.load_buddy(self.buddy_builder.file_save)
 
-    def import_buddy(self):
+    def import_buddy_action(self):
         path, _ = QFileDialog.getOpenFileName(self, 'Open file',
                                               str(Path().resolve()), 'Image files (*.buddy)')
 

@@ -8,12 +8,10 @@ from PIL import Image, ImageQt
 # Converts GIF into images.
 def convert_gif_into_frames(filepath):
     image = Image.open(filepath)
-    # palette = image.getpalette()
 
     frames = []
     try:
         while True:
-            # image.putpalette(palette)
             frame = Image.new('RGBA', image.size)
             frame.paste(image)
 

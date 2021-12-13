@@ -15,7 +15,7 @@ In order to build this project, you'll need the latest version of [Python](https
 
 In the future, I'll add a requirements file.
 ```py
-pip install pyside6, Pillow, qt-material
+pip install pyside6 Pillow qt-material
 ```
 
 ### Installing

@@ -14,6 +14,7 @@ saves
 
 # Distribution / packaging
 .Python
+temp/
 build/
 develop-eggs/
 dist/

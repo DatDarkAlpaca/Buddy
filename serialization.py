@@ -1,6 +1,5 @@
 from PySide6.QtCore import QFile, QIODevice, QDataStream
 from PySide6.QtGui import QImageReader, QImage
-
 from os import walk, mkdir, path
 from PIL import Image, ImageQt
 
@@ -65,7 +64,8 @@ def write_images(out, picture):
 
 
 def save_buddy(buddy_file: BuddyFile, filename):
-    mkdir(f'./saves/{filename}')
+    if not path.isdir(f'./saves/{filename}'):
+        mkdir(f'./saves/{filename}')
 
     # Serializing:
     file = QFile(f"./saves/{filename}/{filename}.buddy")
@@ -87,10 +87,10 @@ def save_buddy(buddy_file: BuddyFile, filename):
     file.close()
 
 
-# Load:
+# Deserialization:
 def load_images(in_file):
     image_type = in_file.readInt8()
-    print(hex(image_type))
+
     if image_type == 0x0A:
         image = QImage()
         in_file >> image

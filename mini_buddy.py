@@ -1,6 +1,5 @@
 from PySide6.QtWidgets import QMainWindow
 from PySide6.QtCore import Qt, QPoint
-from PySide6.QtGui import QMovie, QPixmap, QImage
 
 from compiled_ui.mini_buddy import Ui_MiniBuddy
 

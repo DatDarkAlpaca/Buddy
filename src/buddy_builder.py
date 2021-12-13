@@ -4,7 +4,7 @@ from PySide6.QtGui import QPixmap
 from compiled_ui.buddy_builder import Ui_BuddyBuilder
 from pathlib import Path
 
-from serialization import BuddyFile, save_buddy
+from .serialization import BuddyFile, save_buddy
 
 
 class BuddyBuilder(QDialog, Ui_BuddyBuilder):

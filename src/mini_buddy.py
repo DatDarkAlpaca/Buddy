@@ -41,4 +41,4 @@ class MiniBuddy(QMainWindow, Ui_MiniBuddy):
 
     # Helpers:
     def _set_background_color(self):
-        self.setStyleSheet("background-color: rgba(35, 38, 41);")
+        self.setStyleSheet("background-color: rgba(35, 38, 41, 255);")

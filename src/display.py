@@ -36,6 +36,8 @@ class Display(QLabel):
 
         self.setPixmap(QPixmap.fromImage(self.frames[0]))
 
+        self.resize(QPixmap.fromImage(self.frames[0]).size())
+
     def _animate(self):
         if self.frames and self.playing:
             self.setPixmap(QPixmap.fromImage(self.frames[0]))

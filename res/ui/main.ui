@@ -22,12 +22,6 @@
     <height>400</height>
    </size>
   </property>
-  <property name="maximumSize">
-   <size>
-    <width>500</width>
-    <height>600</height>
-   </size>
-  </property>
   <property name="windowTitle">
    <string>Buddy v1.0</string>
   </property>

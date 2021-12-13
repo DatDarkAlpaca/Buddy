@@ -12,7 +12,7 @@ from PySide6.QtCore import *  # type: ignore
 from PySide6.QtGui import *  # type: ignore
 from PySide6.QtWidgets import *  # type: ignore
 
-from display import Display
+from src.display import Display
 
 
 class Ui_MainWindow(object):
@@ -26,7 +26,6 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
         MainWindow.setSizePolicy(sizePolicy)
         MainWindow.setMinimumSize(QSize(300, 400))
-        MainWindow.setMaximumSize(QSize(500, 600))
         MainWindow.setToolButtonStyle(Qt.ToolButtonIconOnly)
         MainWindow.setTabShape(QTabWidget.Rounded)
         self.central_widget = QWidget(MainWindow)

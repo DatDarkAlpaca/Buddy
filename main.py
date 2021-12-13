@@ -5,7 +5,7 @@ from PySide6.QtWidgets import QApplication
 from qt_material import apply_stylesheet
 import sys
 
-from main_app import MainApplication
+from src.main_app import MainApplication
 from os import mkdir, path
 
 

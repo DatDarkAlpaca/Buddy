@@ -1,6 +1,6 @@
 from PySide6.QtCore import QFile, QIODevice, QDataStream
 from PySide6.QtGui import QImageReader, QImage
-from os import walk, mkdir, path
+from os import walk, mkdir, path, listdir
 from PIL import Image, ImageQt
 
 
@@ -23,10 +23,10 @@ def convert_gif_into_frames(filepath):
     return frames
 
 
-# Locate saves:
+# Locate save files:
 def check_for_saves():
-    if path.isdir('./saves/'):
-        for _, _, files in walk('./saves/'):
+    if path.isdir('saves/'):
+        for _, _, files in walk('saves/'):
             for file in files:
                 if file.endswith('.buddy'):
                     return file
@@ -48,8 +48,8 @@ class BuddyFile:
             return QImage(filepath)
 
 
-# Serialization:
-def write_images(out, picture):
+# Buddy Serialization:
+def write_buddy_images(out, picture):
     if isinstance(picture, QImage):
         out.writeInt8(0x0A)
         _ = out << picture
@@ -79,16 +79,16 @@ def save_buddy(buddy_file: BuddyFile, filename):
     out.writeString(buddy_file.name)
 
     # Profile Picture(s):
-    write_images(out, buddy_file.profile_picture)
+    write_buddy_images(out, buddy_file.profile_picture)
 
     # Buddy Picture(s):
-    write_images(out, buddy_file.buddy_picture)
+    write_buddy_images(out, buddy_file.buddy_picture)
 
     file.close()
 
 
-# Deserialization:
-def load_images(in_file):
+# Buddy Deserialization:
+def load_buddy_images(in_file):
     image_type = in_file.readInt8()
 
     if image_type == 0x0A:
@@ -132,9 +132,62 @@ def load_buddy(filename=None):
     name = in_file.readString()
 
     # Profile Picture:
-    profile_image = load_images(in_file)
+    profile_image = load_buddy_images(in_file)
 
     # Buddy Picture:
-    buddy_image = load_images(in_file)
+    buddy_image = load_buddy_images(in_file)
 
     return {'name': name, 'profile_picture': profile_image, 'mini_buddy_picture': buddy_image}
+
+
+# Icon Serialization:
+def save_icons(filepath):
+    file = QFile(filepath)
+    file.open(QIODevice.WriteOnly)
+
+    # Stream & Magic Number & Version:
+    out = QDataStream(file)
+    out.writeInt32(0x0000C0D1)
+
+    # Amount of icons:
+    out.writeInt16(len([icon for icon in listdir('.') if path.isfile(icon)]))
+
+    # Writing all icons:
+    for icon_path, _, files in walk('./res/'):
+        for f in files:
+            if f.endswith('.png'):
+                out.writeString(f.replace('.png', ''))
+                out << QImage(icon_path + f)
+
+    file.close()
+
+
+# Icon Deserialization:
+def load_icon(in_file):
+    icon_name = in_file.readString()
+
+    image = QImage()
+    in_file >> image
+
+    return icon_name, image
+
+
+def load_icons(filepath=None):
+    file = QFile(filepath)
+    file.open(QIODevice.ReadOnly)
+
+    # Stream & Magic Number & Version:
+    in_file = QDataStream(file)
+    magic = in_file.readInt32()
+
+    if not magic == 0x0000C0D1:
+        raise Exception('Version or validation number mismatch.')
+
+    icons = {}
+    file_amount = in_file.readInt16()
+
+    for _ in range(file_amount):
+        icon_name, icon = (load_icon(in_file))
+        icons[icon_name] = icon
+
+    return icons

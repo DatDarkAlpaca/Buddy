@@ -11,6 +11,7 @@ __pycache__/
 
 # Save files:
 saves
+*.res
 
 # Distribution / packaging
 .Python

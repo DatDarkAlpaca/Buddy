@@ -3,10 +3,10 @@ from PySide6.QtCore import Qt, QPoint, QEvent
 from PySide6.QtGui import QPixmap
 
 from compiled_ui.main_window import Ui_MainWindow
-from buddy_builder import BuddyBuilder
-from mini_buddy import MiniBuddy
+from src.buddy_builder import BuddyBuilder
+from src.mini_buddy import MiniBuddy
 
-from serialization import load_buddy
+from src.serialization import load_buddy, load_icons
 from os.path import basename
 from pathlib import Path
 
@@ -22,10 +22,9 @@ class MainApplication(QMainWindow, Ui_MainWindow):
         # Buddy Builder:
         self.buddy_builder = BuddyBuilder(self)
 
-        # Dragging:
-        self.dragging_window = False
+        self.dragging_window, self.loaded = False, False
         self.offset = QPoint()
-        self.loaded = False
+        self.icons = []
 
         self.initialize()
         self.bind_buttons()
@@ -36,6 +35,7 @@ class MainApplication(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.statusBar()
 
+        self.load_icons()
         self.load_buddy()
 
         # Name:
@@ -44,19 +44,18 @@ class MainApplication(QMainWindow, Ui_MainWindow):
 
     def bind_buttons(self):
         # Minimize button:
-        self.minimize_button.setIcon(QPixmap('res/minus.png'))
+        self.minimize_button.setIcon(QPixmap(self.icons['minus']))
         self.minimize_button.clicked.connect(self.showMinimized)
 
         # Settings button:
-        self.settings_button.setIcon(QPixmap('res/setting.png'))
-        # self.settings_button.clicked.connect(self.buddy_builder_method)
+        self.settings_button.setIcon(QPixmap(self.icons['setting']))
 
         # Import button:
-        self.import_button.setIcon(QPixmap('res/import.png'))
+        self.import_button.setIcon(QPixmap(self.icons['import']))
         self.import_button.clicked.connect(self.new_buddy_action)
 
         # Close button:
-        self.close_button.setIcon(QPixmap('res/close.png'))
+        self.close_button.setIcon(QPixmap(self.icons['close']))
         self.close_button.clicked.connect(self.close)
 
         # Action buttons::
@@ -162,3 +161,8 @@ class MainApplication(QMainWindow, Ui_MainWindow):
             self.change_output('Hello, my name is ' + self.buddy_name.text() + '!')
 
             self.loaded = True
+
+    def load_icons(self):
+        self.icons = load_icons('./res/icons.res')
+        if not self.icons:
+            self.icons = load_icons('./res/icons')

@@ -12,7 +12,7 @@ from PySide6.QtCore import *  # type: ignore
 from PySide6.QtGui import *  # type: ignore
 from PySide6.QtWidgets import *  # type: ignore
 
-from display import Display
+from src.display import Display
 
 
 class Ui_MiniBuddy(object):
@@ -20,20 +20,16 @@ class Ui_MiniBuddy(object):
         if not MiniBuddy.objectName():
             MiniBuddy.setObjectName(u"MiniBuddy")
         MiniBuddy.resize(150, 150)
-        sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(MiniBuddy.sizePolicy().hasHeightForWidth())
         MiniBuddy.setSizePolicy(sizePolicy)
         MiniBuddy.setMinimumSize(QSize(150, 150))
-        MiniBuddy.setMaximumSize(QSize(150, 150))
         self.central_widget = QWidget(MiniBuddy)
         self.central_widget.setObjectName(u"central_widget")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.central_widget.sizePolicy().hasHeightForWidth())
-        self.central_widget.setSizePolicy(sizePolicy1)
+        sizePolicy.setHeightForWidth(self.central_widget.sizePolicy().hasHeightForWidth())
+        self.central_widget.setSizePolicy(sizePolicy)
         self.gridLayout = QGridLayout(self.central_widget)
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setContentsMargins(0, 0, 0, 0)

@@ -23,10 +23,9 @@ class BuddyBuilder(QDialog, Ui_BuddyBuilder):
         self.buddy_name, self.profile_path, self.mini_buddy_path = [''] * 3
 
     def initialize(self):
-        # Todo: use the text rather than the visibility.
-        self.not_empty_name.setVisible(False)
-        self.not_empty_profile.setVisible(False)
-        self.not_empty_buddy.setVisible(False)
+        self.not_empty_name.setText('')
+        self.not_empty_profile.setText('')
+        self.not_empty_buddy.setText('')
 
     def binding(self):
         # Apply Buttons:
@@ -74,19 +73,19 @@ class BuddyBuilder(QDialog, Ui_BuddyBuilder):
         self.valid = True
 
         if self.name_edit.text() == '':
-            self.not_empty_name.setVisible(True)
+            self.not_empty_name.setText('This field may not be empty')
             self.valid = False
         else:
-            self.not_empty_name.setVisible(False)
+            self.not_empty_name.setText('')
 
         if self.profile_edit.text() == '':
-            self.not_empty_profile.setVisible(True)
+            self.not_empty_profile.setText('This field may not be empty')
             self.valid = False
         else:
-            self.not_empty_profile.setVisible(False)
+            self.not_empty_profile.setText('')
 
         if self.buddy_edit.text() == '':
-            self.not_empty_buddy.setVisible(True)
+            self.not_empty_buddy.setText('This field may not be empty')
             self.valid = False
         else:
-            self.not_empty_buddy.setVisible(False)
+            self.not_empty_buddy.setText('')

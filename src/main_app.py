@@ -5,6 +5,7 @@ from PySide6.QtGui import QPixmap
 from compiled_ui.main_window import Ui_MainWindow
 from src.buddy_builder import BuddyBuilder
 from src.mini_buddy import MiniBuddy
+from src.settings import Settings
 
 from src.serialization import load_buddy, load_icons
 from os.path import basename
@@ -21,6 +22,10 @@ class MainApplication(QMainWindow, Ui_MainWindow):
 
         # Buddy Builder:
         self.buddy_builder = BuddyBuilder(self)
+
+        # Settings:
+        self.settings = Settings(self)
+        self.settings.show()
 
         self.dragging_window, self.loaded = False, False
         self.offset = QPoint()

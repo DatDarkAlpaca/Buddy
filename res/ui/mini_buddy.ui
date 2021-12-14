@@ -68,7 +68,7 @@
   <customwidget>
    <class>Display</class>
    <extends>QLabel</extends>
-   <header>display</header>
+   <header>src.display</header>
   </customwidget>
  </customwidgets>
  <resources/>

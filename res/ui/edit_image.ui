@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Edit</class>
+ <widget class="QMainWindow" name="Edit">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>669</width>
+    <height>406</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Edit</string>
+  </property>
+  <widget class="QWidget" name="central_widget"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,6 @@
+[submodule "vendor/premake-qt"]
+	path = vendor/premake-qt
+	url = https://github.com/dcourtois/premake-qt
+[submodule "vendor/qass"]
+	path = vendor/qass
+	url = https://github.com/githubuser0xFFFF/Qt-Advanced-Stylesheets
